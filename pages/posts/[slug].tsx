@@ -17,7 +17,7 @@ type Props = {
 
 const components = {
   //Place your custom components here
-  code: props => <CodeBlock {...props} />,
+  code: CodeBlock,
 };
 
 const PostPage: React.FC<Props> = ({ source, frontMatter }: Props) => {
