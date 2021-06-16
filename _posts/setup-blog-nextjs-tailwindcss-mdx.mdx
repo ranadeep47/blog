@@ -1,0 +1,194 @@
+---
+date: '2021-06-05'
+thumbnail: /assets/how-to-make-stock-from-kelp-and-bonito-flakes.jpeg
+title: Tutorial - Setup your blog with Next.js, MDX and TailwindCSS and deploy to vercel
+description: Tutorial on setting up your personal blog using Next.js, MDX, TailwindCSS, TypeScript and deploying it to vercel
+---
+
+## Introduction
+The code discussed in this post is hosted in [Github](https://github.com/ranadeep47/blog). Check the repository
+if you can't follow along.
+
+Next.js is a react framework by vercel which has numerous benefits built-in like SSR rendering, webpack configurations
+and several other perfomrance optimisations which you can check here on their [website](https://nextjs.org/)
+
+In this post, we will learn to setup a personal blog like the one you are reading now using TypeScript, TailwindCSS and MDX.
+MDXjs. 
+
+## Why MDXjs?
+MDXjs allows you to write JSX components in your markdown, yes, that means you can embed your favorite React components inside your Markdown and they'll be rendered in React along with formatting the markdown. You can even configure how every markdown element is rendered in React using custom React components. In our case, we will override the code and inlineCode markdown elements to use `prism-react-renderer` which helps to have a readable syntax highlighting for all the code in our blog posts.
+
+## Installation
+To begin installation, initialiase a repo with `yarn init` and setup an empty project. Install the following depenedencies we need for the project:
+
+Nextjs: `yarn add next next-mdx-remote next-themes react react-dom`<br/>
+Tailwind: `yarn add tailwindcss @tailwindcss/typography autoprefixer postcss`<br/>
+TypeScript: `yarn add --dev typescript @types/node @types/react @types/react-dom`<br/>
+
+Add the following lines to your `package.json`, this helps us start the next.js dev server with `yarn run dev`
+```javascript
+{
+  "name": "blog",
+  "version": "0.1.0",
+  "private": true,
+  
+  //The lines below
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+
+
+  "dependencies": {
+    ...
+  },
+}
+```
+## Setting up tailwindcss 
+Run `npx tailwindcss init -p` to let the tailwind cli tool create simple `tailwind.config.js` and `postcss.config.js` files which are required for tailwind to read the configuration settings.
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  purge: ['./components/**/*.tsx', './pages/**/*.tsx'],
+  // darkMode: false, // or 'media' or 'class'
+  darkMode: 'class',
+  theme: {
+    extend: {},
+  },
+  variants: {},
+  plugins: [require('@tailwindcss/typography')],
+};
+```
+
+`darkMode: 'class'` is needed to tell tailwind to use class based config for enabling dark mode features. Setting this will let us specify `dark:bg-blue-100` like classes to specifiy which css props are to applied when dark mode is active.
+
+Notice we are using `@tailwindcss/typography` plugin which provides us with a set of prose classes you can use to add beautiful typographic defaults to any vanilla HTML you don't control (like HTML rendered from Markdown)
+
+---
+
+## Handling Markdown
+
+We will place all our markdown blog posts in a folder named `_posts` and import them programatically in our react code before we render them.
+
+Create a file named mdxUtils.ts with the following code 
+```tsx
+import fs from 'fs';
+import { join } from 'path';
+import matter from 'gray-matter';
+
+const POSTS_PATH = join(process.cwd(), '_posts');
+
+function getPostFilePaths(): string[] {
+  return (
+    fs
+      .readdirSync(POSTS_PATH)
+      // Only include md(x) files
+      .filter((path) => /\.mdx?$/.test(path))
+  );
+}
+
+export function getPost(slug: string): Post {
+  const fullPath = join(POSTS_PATH, `${slug}.mdx`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const { data, content } = matter(fileContents);
+
+  return { data, content };
+}
+
+```
+The above code reads all md files in our _posts directory and parses the markdown into a JS object with `data` and `content` fields. These `Post` objects are then serialsed using `next-mdx-remote/serialize` and then fed into 
+`MDXRemote` from `next-mdx-remote`. This second process happens in our `[slug].tsx` file inside the the Next.js special folder called `pages`. This special folder contains the tsx files which are rendered by Next.js corresponding to the URL route in the browser.
+Eg: `http://blog.com/post/my-blog-post` would cause Next.js to render the component in `pages/post/[slug].tsx` with the placeholder slug replaced with route param data, in this case `my-blog-post`
+
+Ok now lets get to the most interesting part of this blog post, which is the rendering of markdown using MDXRemote.
+
+## Rendering Markdown 
+
+```tsx
+import { serialize } from 'next-mdx-remote/serialize';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import CodeBlock from '../../components/CodeBlock';
+import InlineCode from '../../components/InlineCode';
+...
+
+
+type Props = {
+  source: MDXRemoteSerializeResult;
+  frontMatter: Omit<IPost, 'slug'>;
+};
+
+...
+
+const components = {
+  //Place your custom components here
+  code: CodeBlock,
+  inlineCode: InlineCode
+};
+
+const PostPage: React.FC<Props> = ({ source, frontMatter }: Props) => {
+  return (
+    <Layout pageTitle={frontMatter.title}>
+      <article className="prose prose-green">
+        <h1>{frontMatter.title}</h1>
+        <MDXRemote {...source} components={components} />
+      </article>
+    </Layout>
+  );
+};
+
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { content, data } = getPost(params?.slug as string);
+
+  const mdxSource = await serialize(content, { scope: data });
+
+  return {
+    props: {
+      source: mdxSource,
+      frontMatter: data,
+    },
+  };
+};
+
+```
+
+Here we see that in `getStaticProps` we are passing `params.slug` to `getPost` to fetch the `Post` object corresponding to our url slug. This is then serialised and passed as mdxSource which will be sent as props to our 
+`MDXRemote` component. 
+
+Note that we are overwriting two of the components which MDXRemote uses to render code specified in markdown files. We are doing this because we want to use syntax highlighting for our code and this is acheived by writing 
+a custom `CodeBlock` component which uses `prism-react-renderer`
+
+```tsx
+import Highlight, {defaultProps} from 'prism-react-renderer'
+
+type Props = {
+    className: string,
+    children: string
+  };
+  
+const CodeBlock: React.FC<Props> = ({ className, children }: Props) => {
+  const language = className.replace(/language-/, '')
+  
+  return (
+    <Highlight {...defaultProps} code={children} language="javascript">
+      {({className, style, tokens, getLineProps, getTokenProps}) => (
+        <code className={className} style={{...style}}>
+          {tokens.map((line, i) => (
+            <div key={i} {...getLineProps({line, key: i})}>
+              {line.map((token, key) => (
+                <span key={key} {...getTokenProps({token, key})} />
+              ))}
+            </div>
+          ))}
+        </code>
+      )}
+    </Highlight>
+  )
+};
+  
+export default CodeBlock;
+```
+
+Now the code in our markdown files have beautiful syntax highlighting thanks to prism.js 

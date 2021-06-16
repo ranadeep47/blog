@@ -10,8 +10,8 @@ const Layout: React.FC<Props> = ({ children, pageTitle }: Props) => {
   return (
     <>
       <Meta pageTitle={pageTitle} />
-      <Header />
-      <div className="max-w-prose mx-auto px-4">
+      <Header showBlog={true}/>
+      <div className="max-w-prose mx-auto">
         <main className="pt-4 pb-12">{children}</main>
       </div>
     </>

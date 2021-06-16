@@ -5,6 +5,7 @@ import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 
 import Layout from '../../components/Layout';
 import CodeBlock from '../../components/CodeBlock';
+import InlineCode from '../../components/InlineCode';
 
 import { IPost } from '../../types/post';
 import { SITE_URL } from '../../utils/constants';
@@ -18,6 +19,7 @@ type Props = {
 const components = {
   //Place your custom components here
   code: CodeBlock,
+  inlineCode: InlineCode
 };
 
 const PostPage: React.FC<Props> = ({ source, frontMatter }: Props) => {

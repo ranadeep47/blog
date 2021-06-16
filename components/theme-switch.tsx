@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import Switch from 'react-switch';
-import { IconContext } from 'react-icons';
-import { FaMoon, FaSun } from 'react-icons/fa';
 
 const ThemeSwitch: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -35,26 +33,12 @@ const ThemeSwitch: React.FC = () => {
       handleDiameter={20}
       uncheckedIcon={
         <div className="flex justify-center items-center h-full">
-          <IconContext.Provider
-            value={{
-              color: 'gold',
-              size: '80%',
-            }}
-          >
-            <FaSun />
-          </IconContext.Provider>
+          ☀
         </div>
       }
       checkedIcon={
         <div className="flex justify-center items-center h-full">
-          <IconContext.Provider
-            value={{
-              color: 'yellow',
-              size: '80%',
-            }}
-          >
-            <FaMoon />
-          </IconContext.Provider>
+          🌜
         </div>
       }
       height={24}

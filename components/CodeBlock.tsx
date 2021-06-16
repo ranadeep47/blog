@@ -7,9 +7,9 @@ type Props = {
   
   const CodeBlock: React.FC<Props> = ({ className, children }: Props) => {
     const language = className.replace(/language-/, '')
-    
+
     return (
-      <Highlight {...defaultProps} code={children} language="javascript">
+      <Highlight {...defaultProps} code={children} language={language}>
         {({className, style, tokens, getLineProps, getTokenProps}) => (
           <code className={className} style={{...style}}>
             {tokens.map((line, i) => (

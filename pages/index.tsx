@@ -14,18 +14,18 @@ type Props = {
 
 const avatar: string = `/assets/avatar.png`;
 
-const bio = `Im a Full-Stack JavaScript developer with 5+ years of experience in building 
+const bio = `Im a Full-Stack TypeScript developer with 5+ years of experience in building 
   digital products using React, React-Native and Node.js. Im passionate about building clean user 
-  interfaces and products that deliver smooth user experiences.Currently im playing with Solidity and building Ethereum dApps and i will share my learnings in this blog.
+  interfaces and products that deliver smooth user experiences. Currently im playing with Solidity and building Ethereum dApps and i will share my learnings in this blog.
 `
 
 const Intro: React.FC = () => {
   return (
-  <div className="bg-blue-100">          
+  <div className="bg-blue-100 dark:bg-gray-700">          
     <div className="max-w-prose mx-auto py-8">
       <p className="font-bold text-4xl py-4">👋 Hey,</p>
       <p className="font-bold text-4xl">I'm Ranadeep</p>
-      <p className="font-medium text-xl">Full-Stack JavaScript Engineer, Solidity enthusiast</p>
+      <p className="font-medium text-xl">Full-Stack TypeScript Engineer, Solidity enthusiast</p>
       <div className="flex justify-between items-center">
         <p className="py-4">{bio}</p>
         <div className="flex-none">
@@ -57,11 +57,14 @@ const Home: React.FC<Props> = ({ posts }: Props) => {
         <div className="space-y-12">
           {posts.map((post) => (
             <div key={post.slug}>
-              <h2 className="text-2xl font-bold mb-4 border-b-4 inline-block">
+              <h2 className="text-2xl font-bold mb-4 border-b-2 hover:border-gray-400 inline">
                 <Link href={`/posts/${post.slug}`}>
                   <a>{post.title}</a>
                 </Link>
               </h2>
+              <div className="flex justify-between mt-4 text-sm">
+                <p>📅 Published: {post.date}</p>
+              </div>
             </div>
           ))}
         </div>
