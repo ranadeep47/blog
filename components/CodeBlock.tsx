@@ -1,4 +1,4 @@
-import Highlight, {defaultProps} from 'prism-react-renderer'
+import Highlight, {defaultProps, Language} from 'prism-react-renderer'
 
 type Props = {
     className: string,
@@ -6,7 +6,7 @@ type Props = {
   };
   
   const CodeBlock: React.FC<Props> = ({ className, children }: Props) => {
-    const language = className.replace(/language-/, '')
+    const language: Language = className.replace(/language-/, '') as Language;
 
     return (
       <Highlight {...defaultProps} code={children} language={language}>
