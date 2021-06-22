@@ -5,7 +5,7 @@ type Props = {
   
   const InlineCode: React.FC<Props> = ({ className, children }: Props) => {    
     return (
-      <span className={[className,'px-2', 'bg-gray-200', 'rounded', 'text-red-700', 'my-1', 'inline-block'].join(' ')}>
+      <span className={[className,'py-2', 'px-4', 'text-sm', 'bg-gray-200', 'rounded', 'text-gray-800', 'my-1', 'inline-block'].join(' ')}>
         {children}
       </span>
     )

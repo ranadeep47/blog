@@ -8,9 +8,9 @@ description: Create an ERC-20 token using hardhat, ethers and deploy to a live t
 
 We will learn how to create your own ERC-20 token and deploy it to a live testnet and deploy the react frontend to vercel. 
 
-> Code is available at [Github](https://github.com/ranadeep47/erc20-hardhat-waffle-react)
+> Code is available at [Github](https://github.com/ranadeep47/erc20-hardhat-waffle-react), demo at [https://erc20-hardhat-waffle-react.vercel.app/](https://erc20-hardhat-waffle-react.vercel.app/)
 
-This project uses open-zepplin for smart contracts, hardhat, ethers for interacting with blockchain and waffle for writing tests and typescript, react for frontend, for UI we will use a UI library called baseweb to get us started quickly.
+This project uses open-zeppelin for smart contracts, hardhat, ethers for interacting with blockchain and waffle for writing tests and typescript, react for frontend, for UI we will use a UI library called baseweb to get us started quickly.
 
 The whole process is broken down into
 1. Setup
@@ -35,6 +35,7 @@ Baseweb:
 Others: `npm install --save-dev dotenv` 
 
 React: `npm install --save react react-dom react-scripts`
+
 SmartContracts: `npm install --save @openzeppelin/contracts`
 
 After installing all the above dependencies setup your `hardhat.config.ts` by running `npx hardhat`. I'd suggest you copy hardhat and typescript from the code's [github repo](https://github.com/ranadeep47/erc20-hardhat-waffle-react) to get started quickly
@@ -132,7 +133,7 @@ function App(props) {
 ```
 In our react code, we are importing the contract ABI, connecting to the metamask's network which is injected into the browser as `window.ethereum`. We use ethers.js library to connect to metamask. The `provider` contains network info and `signer` contains the user's account info like address. 
 
-We connect to the contract using `const contract = new ethers.Contract(tokenAddress, Token.abi, provider);` and run methods on the contract to perform various actions like transferring, approving tokens and checking balance. Check the code in `App.js` to see how all the functions like `balance, approve, transfer, allowance` are implemented.
+We connect to the contract using `const contract = new ethers.Contract(tokenAddress, Token.abi, provider);` and run methods on the contract to perform various actions like transferring, approving tokens and checking balance. Check the code in [App.js](https://github.com/ranadeep47/erc20-hardhat-waffle-react/blob/main/src/App.js) to see how all the functions like `balance, approve, transfer, allowance` are implemented.
 
 ---
 
@@ -141,7 +142,8 @@ Open a new terminal window and run `npx hardhat node` to run hardhat's local net
 
 ![alt text](/assets/erc20/local-hardhat-node.png "Starting local hardhat node")
 
-To deploy our contract to hardhat's local network, we first create a folder called `build` and write a `deploy.js` script.
+To deploy our contract to hardhat's local network, we first create a folder called `scripts` and write a `deploy.js` script in it.
+
 ### Deploy script
 ``` javascript
 const hre = require("hardhat");
@@ -182,17 +184,17 @@ Now place this contract address in the `tokenAddress` variable in `App.js` to co
 Now to test the contract, add the network details in your metamask
 ![alt text](/assets/erc20/local-node-metamask.png "Adding local node to metamask")
 
-Now in an other terminal window while the node is running, run `npm run start` and make sure you have `react-scripts start` in your `scripts` field in package.json. Now head to `http://localhost:3000` to interact with the contract, make sure you are connect to the Localhost Hardhat node network in your metamask wallet
+Now in an other terminal window while the node is running, run `npm run start` and make sure you have `react-scripts start` in your `scripts` field in package.json. Now head to `http://localhost:3000` to interact with the contract, make sure you are connected to the Localhost Hardhat node network in your metamask wallet
 
 
 ---
 
 ## 4. Deploying contract to Rinkeby testnet
-Deploying contract's requires Gas, so we require test ether from Rinkeby's faucet [here](https://www.rinkeby.io/#faucet). Make sure your metamask account is connected to `Rinkeby Test network` and check if it has some ether in it. 
+Deploying contracts costs eth gas, so we acquire test ether from Rinkeby's faucet [here](https://www.rinkeby.io/#faucet). Make sure your metamask account is connected to `Rinkeby Test network` and check if it has some ether in it. 
 
 Also we create a project in [Infura](https://infura.io/) get an infura api key to interact and create contracts in rinkeby network
 
-Then create a `.env` file in your repo and add the following keys to it, make sure .env is file added in your `.gitignore`
+Then create a `.env` file in your repo and add the following keys to it, make sure .env is file added in your `.gitignore` so that you wont accidentally upload your private key details to github.
 
 ```
 INFURA_API_KEY=** INFURA PROJECT API KEY**
@@ -230,7 +232,7 @@ Done, now we deploy our contract to the rinkeby network using the same deploy co
 `npx hardhat run scripts/deploy.js --network rinkeby`
 
 ![alt text](/assets/erc20/deploy-rinkeby.png "Deploying contract to rinkeby test net") 
-You can see the address where our contract is deploy. To confirm it, lets head to etherscan and paste our contract address in the search bar. 
+You can see the address where our contract is deployed. To confirm it, lets head to etherscan and paste our contract address in the search bar. 
 
 You should find the contract deployed on etherscan, with the tokens name, owner, balance etc..
 ![alt text](/assets/erc20/etherscan.png "Verifying contract on etherscan") 
@@ -256,3 +258,5 @@ Add the following to your `package.json` for the vercel build step to succeed
 ![alt text](/assets/erc20/deploy-vercel.png "Deploying the frontend in vercel") 
 
 Now in your vercel dashboard, click import project, select your repo and click deploy. Vercel will install all the dependencies, build and deploy your project and gives you the final public deploy url. Visit the url to finally interact with your contract.
+
+This demo is hosted [here](https://erc20-hardhat-waffle-react.vercel.app/) at `https://erc20-hardhat-waffle-react.vercel.app/`
