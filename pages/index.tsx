@@ -83,6 +83,5 @@ export const getStaticProps: GetStaticProps = async () => {
     'title',
     'description',
   ]);
-
   return { props: { posts } };
 };
