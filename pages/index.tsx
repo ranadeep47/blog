@@ -23,10 +23,10 @@ const Intro: React.FC = () => {
   return (
   <div className="bg-blue-100 dark:bg-gray-700">          
     <div className="max-w-prose mx-auto py-8">
-      <p className="font-bold text-4xl py-4">👋 Hey,</p>
-      <p className="font-bold text-4xl">I'm Ranadeep</p>
-      <p className="font-medium text-xl">Full-Stack TypeScript Engineer, Solidity enthusiast</p>
-      <div className="flex justify-between items-center">
+      <p className="font-bold text-4xl py-4 dark:text-gray-300">👋 Hey,</p>
+      <p className="font-bold text-4xl dark:text-gray-300">I'm Ranadeep</p>
+      <p className="font-medium text-xl dark:text-gray-400">Full-Stack TypeScript Engineer, Solidity enthusiast</p>
+      <div className="flex justify-between items-center dark:text-gray-300">
         <p className="py-4">{bio}</p>
         <div className="flex-none">
           <Image
@@ -52,12 +52,12 @@ const Home: React.FC<Props> = ({ posts }: Props) => {
       </Head>
       <Header />
       <Intro />
-      <div className="max-w-prose mx-auto">
-        <h3 className="text-4xl font-bold my-8">Recent Posts</h3>
+      <div className="max-w-prose mx-auto pb-12">
+        <h3 className="text-4xl font-bold my-8 dark:text-gray-300">Recent Posts</h3>
         <div className="space-y-12">
           {posts.map((post) => (
             <div key={post.slug}>
-              <h2 className="text-2xl font-bold mb-4 border-b-2 hover:border-gray-400 inline">
+              <h2 className="dark:text-gray-300 text-2xl font-bold mb-4 border-b-2 hover:border-gray-400 inline">
                 <Link href={`/posts/${post.slug}`}>
                   <a>{post.title}</a>
                 </Link>
