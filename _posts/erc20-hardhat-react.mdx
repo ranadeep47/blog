@@ -1,5 +1,5 @@
 ---
-date: '2021-06-20'
+date: '2021-06-10'
 title: Tutorial - Create an ERC-20 token, deploy to rinkeby testnet and frontend to vercel
 description: Create an ERC-20 token using hardhat, ethers and deploy to a live testnet and frontend to vercel
 ---
@@ -38,7 +38,7 @@ React: `npm install --save react react-dom react-scripts`
 
 SmartContracts: `npm install --save @openzeppelin/contracts`
 
-After installing all the above dependencies setup your `hardhat.config.ts` by running `npx hardhat`. I'd suggest you copy hardhat and typescript from the code's [github repo](https://github.com/ranadeep47/erc20-hardhat-waffle-react) to get started quickly
+After installing all the above dependencies setup your `hardhat.config.ts` by running `npx hardhat`. I'd suggest you copy hardhat and typescript configs from the code's [github repo](https://github.com/ranadeep47/erc20-hardhat-waffle-react) to get started quickly
 
 ---
 
@@ -64,7 +64,7 @@ Now run `npx hardhat compile`, this step will generate our typechain types for o
 
 You should find them here `/artifacts/contracts/Token.sol/Token.json`
 
-Fronend code to interact with our contract 
+Frontend code to interact with our contract 
 ``` javascript
 import Token from './artifacts/contracts/Token.sol/Token.json';
 import React, { useState, useEffect } from 'react';
